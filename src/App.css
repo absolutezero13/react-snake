@@ -1,38 +1,91 @@
 .App {
-  text-align: center;
-}
-
-.App-logo {
-  height: 40vmin;
-  pointer-events: none;
-}
-
-@media (prefers-reduced-motion: no-preference) {
-  .App-logo {
-    animation: App-logo-spin infinite 20s linear;
-  }
-}
-
-.App-header {
-  background-color: #282c34;
-  min-height: 100vh;
   display: flex;
-  flex-direction: column;
   align-items: center;
   justify-content: center;
-  font-size: calc(10px + 2vmin);
+  flex-direction: column;
+  outline: none;
+}
+
+.play-ground {
+  position: relative;
+  margin-top: 20px;
+  border: 5px solid rgb(179, 170, 170);
+  width: 600px;
+  height: 600px;
+  overflow: hidden;
+}
+.images-container {
+  position: absolute;
+  transition: all ease-in-out 1.2s;
+}
+
+.snake-square {
+  border: 1px solid rgb(228, 216, 216);
+  width: 30px;
+  height: 30px;
+  background-color: green;
+  animation: appear 0.5s;
+}
+
+.snake-container {
+  position: absolute;
+  animation: appear 0.5s;
+}
+
+.background-image {
+  position: absolute;
+  width: 600px;
+  height: 600px;
+  opacity: 0.8;
+}
+
+.lost-modal {
+  z-index: 99;
+  position: absolute;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  top: 45%;
+  left: 50%;
+  font-weight: bold;
+  transform: translate(-50%, -50%);
+  background-color: white;
+  width: 200px;
+  height: 100px;
+  border: 5px solid rgb(179, 170, 170);
+}
+.speed-container {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  margin-top: 20px;
+}
+
+.speed-choice {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 150px;
+  text-align: center;
+  cursor: pointer;
+  border: 5px solid rgb(231, 225, 225);
+  border-radius: 16px;
+  padding: 10px;
+  margin-left: 10px;
+  transition: all 0.3s;
+  box-sizing: border-box;
+}
+.speed-choice:hover {
+  background-color: green;
   color: white;
 }
 
-.App-link {
-  color: #61dafb;
-}
-
-@keyframes App-logo-spin {
+@keyframes appear {
   from {
-    transform: rotate(0deg);
+    opacity: 0;
   }
   to {
-    transform: rotate(360deg);
+    opacity: 1;
   }
 }
