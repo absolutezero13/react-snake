@@ -195,10 +195,13 @@ function App(): ReactElement {
       <div className="play-ground">
         {isGameOver && (
           <div className="lost-modal">
-            <p> YOU LOST! YOU SUCK!</p>
+            <p> GAME OVER</p>
             <h2>💩</h2>
             <p> Your score is : {score} </p>
-            <button onClick={playAgain}> PLAY AGAIN </button>
+            <button className="lost-button" onClick={playAgain}>
+              {" "}
+              PLAY AGAIN 🔁{" "}
+            </button>
           </div>
         )}
 

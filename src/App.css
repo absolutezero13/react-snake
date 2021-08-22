@@ -56,8 +56,24 @@
   padding: 10px;
   font-weight: bold;
   transform: translate(-50%, -50%);
-  background-color: white;
+  background-color: #da291c;
   border-radius: 10px;
+  color: white;
+  border: 3px solid rgb(177, 139, 139);
+  animation: appear 0.3s;
+}
+.lost-button {
+  width: 150px;
+  text-align: center;
+  margin-top: 25px;
+  cursor: pointer;
+  border: 5px solid rgb(231, 225, 225);
+  border-radius: 16px;
+  padding: 10px;
+  margin-left: 10px;
+  transition: all 0.3s;
+  box-sizing: border-box;
+  font-family: source-code-pro, Menlo, Monaco, Consolas, "Courier New";
 }
 .speed-container {
   display: flex;
