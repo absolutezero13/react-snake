@@ -3,23 +3,40 @@
   align-items: center;
   justify-content: center;
   flex-direction: column;
+  height: 100vh;
   outline: none;
+  animation: appear 0.8s;
+  background-color: rgb(34, 33, 33);
 }
 
 .play-ground {
   position: relative;
   margin-top: 20px;
-  border: 5px solid rgb(179, 170, 170);
+  border: 1px solid rgb(236, 13, 13);
   width: 600px;
   height: 600px;
   overflow: hidden;
+  background-color: rgb(48, 48, 48);
 }
+.background-image {
+  position: absolute;
+  width: 600px;
+  height: 600px;
+  opacity: 0.3;
+}
+
 .images-container {
   position: absolute;
   transition: all ease-in-out 1.2s;
 }
 
+.snake-container {
+  position: absolute;
+  border-radius: 10px;
+}
+
 .snake-square {
+  position: absolute;
   border: 1px solid rgb(228, 216, 216);
   width: 30px;
   height: 30px;
@@ -27,33 +44,20 @@
   animation: appear 0.5s;
 }
 
-.snake-container {
-  position: absolute;
-  animation: appear 0.5s;
-}
-
-.background-image {
-  position: absolute;
-  width: 600px;
-  height: 600px;
-  opacity: 0.8;
-}
-
 .lost-modal {
   z-index: 99;
   position: absolute;
   display: flex;
-  justify-content: center;
+  justify-content: space-around;
   align-items: center;
   flex-direction: column;
   top: 45%;
   left: 50%;
+  padding: 10px;
   font-weight: bold;
   transform: translate(-50%, -50%);
   background-color: white;
-  width: 200px;
-  height: 100px;
-  border: 5px solid rgb(179, 170, 170);
+  border-radius: 10px;
 }
 .speed-container {
   display: flex;
@@ -77,8 +81,17 @@
   box-sizing: border-box;
 }
 .speed-choice:hover {
-  background-color: green;
   color: white;
+}
+
+.food-dot {
+  box-shadow: 0 0 5px 5px #da291c;
+  border-radius: 100px;
+  position: absolute;
+  width: 20px;
+  height: 20px;
+  animation: foodAnimation infinite 0.5s cubic-bezier(0.19, 1, 0.22, 1),
+    rotate infinite 0.3s linear;
 }
 
 @keyframes appear {
@@ -87,5 +100,19 @@
   }
   to {
     opacity: 1;
+  }
+}
+
+@keyframes foodAnimation {
+  from {
+    box-shadow: 0 0 0 0 #da291c;
+  }
+  to {
+    box-shadow: 0 0 5px 5px #da291c;
+  }
+}
+@keyframes rotate {
+  100% {
+    transform: rotate(180deg);
   }
 }

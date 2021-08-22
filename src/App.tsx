@@ -3,47 +3,31 @@ import { useEffect } from "react";
 import { useRef } from "react";
 import { useState } from "react";
 import { ReactElement } from "react";
+import { initialSnakeDots, imageSources, speedChoices } from "./helpers/data";
 import "./App.css";
 import sarah from "./sarah.png";
-import ferrariImg from "./assets/ferrari.jpg";
-import turtleImg from "./assets/turtle.jpg";
-import cheetahImg from "./assets/cheetah.jpg";
-import regularImg from "./assets/regular.jpg";
-import rocketImg from "./assets/rocket.jpg";
+import beans from "./assets/beans.jpg";
 
-const initialSnakeDots = [
-  [0, 0],
-  [30, 0],
-  [60, 0],
-  [90, 0],
-  [120, 0],
-  [150, 0],
-];
-const speedChoices = [
-  { name: "TURTLE 🐢", speed: 400 },
-  { name: "REGULAR 🥱", speed: 250 },
-  { name: "CHEETAH 🐆", speed: 100 },
-  { name: "FERRARI 🏎️", speed: 50 },
-  { name: "SPACESHIP 🚀", speed: 25 },
-];
-
-const imageSources = [turtleImg, regularImg, cheetahImg, ferrariImg, rocketImg];
+type speedChoiceTypes =
+  | "TURTLE"
+  | "REGULAR"
+  | "CHEETAH"
+  | "FERRARI"
+  | "SPACESHIP";
+type directionTypes = "up" | "down" | "left" | "right";
 
 function App(): ReactElement {
   const containerRef = useRef<HTMLDivElement>(null);
   const [speed, setSpeed] = useState(400);
   const [snakeDots, setSnakeDots] = useState(initialSnakeDots);
-  const [selectedSpeed, setSelectedSpeed] = useState<
-    "TURTLE" | "REGULAR" | "CHEETAH" | "FERRARI" | "SPACESHIP"
-  >("TURTLE");
+  const [selectedSpeed, setSelectedSpeed] =
+    useState<speedChoiceTypes>("TURTLE");
   const [foodDots, setFoodDots] = useState<number[]>([]);
   const [isGameOver, setIsGameOver] = useState(false);
   const [score, setScore] = useState(0);
-
-  const [direction, setDirection] = useState<"up" | "down" | "left" | "right">(
-    "right"
-  );
-  const [clearIntervalSnake, setClearIntervalSnake] = useState<any>();
+  const [direction, setDirection] = useState<directionTypes>("right");
+  const [clearTimeoutSnake, setClearTimeoutSnake] = useState<any>();
+  const [selfChosen, setSelfChosen] = useState(false);
 
   useEffect(() => {
     if (containerRef.current) {
@@ -53,10 +37,14 @@ function App(): ReactElement {
 
   useEffect(() => {
     if (!isGameOver) {
-      const clear = setInterval(moveSnake, speed);
-      setClearIntervalSnake(clear);
+      clearTimeout(clearTimeoutSnake);
+      const clear = setTimeout(() => {
+        moveSnake();
+      }, speed);
+
+      setClearTimeoutSnake(clear);
     }
-  }, [direction, isGameOver]);
+  }, [direction, isGameOver, snakeDots]);
 
   useEffect(() => {
     eatFood();
@@ -68,19 +56,23 @@ function App(): ReactElement {
   }, []);
 
   useEffect(() => {
-    console.log(score);
-    if (score > 12) {
-      setSelectedSpeed("SPACESHIP");
-      setSpeed(25);
-    } else if (score > 9) {
-      setSelectedSpeed("FERRARI");
-      setSpeed(50);
-    } else if (score > 6) {
-      setSelectedSpeed("CHEETAH");
-      setSpeed(100);
-    } else if (score > 3) {
-      setSelectedSpeed("REGULAR");
-      setSpeed(250);
+    if (!selfChosen) {
+      if (score > 12) {
+        setSelectedSpeed("SPACESHIP");
+        setSpeed(25);
+      } else if (score > 9) {
+        setSelectedSpeed("FERRARI");
+        setSpeed(50);
+      } else if (score > 6) {
+        setSelectedSpeed("CHEETAH");
+        setSpeed(100);
+      } else if (score > 3) {
+        setSelectedSpeed("REGULAR");
+        setSpeed(250);
+      } else {
+        setSelectedSpeed("TURTLE");
+        setSpeed(400);
+      }
     }
   }, [score]);
 
@@ -106,7 +98,6 @@ function App(): ReactElement {
   };
 
   const moveSnake = () => {
-    clearInterval(clearIntervalSnake);
     setSnakeDots((prevDots) => {
       const dots = [...prevDots];
       let head = dots[dots.length - 1];
@@ -135,7 +126,7 @@ function App(): ReactElement {
     snakeDots.forEach((dots) => {
       if (dots[0] < 0 || dots[1] < 0 || dots[0] > 570 || dots[1] > 570) {
         setDirection("right");
-        clearInterval(clearIntervalSnake);
+        clearTimeout(clearTimeoutSnake);
         setIsGameOver(true);
       } else {
         return;
@@ -184,6 +175,7 @@ function App(): ReactElement {
     setSelectedSpeed("TURTLE");
     setSpeed(400);
     setIsGameOver(false);
+    setSelfChosen(false);
     setScore(0);
     containerRef.current?.focus();
     setSnakeDots(initialSnakeDots);
@@ -198,7 +190,6 @@ function App(): ReactElement {
       className="App"
     >
       <div style={{ marginRight: "20px" }}>
-        {" "}
         {/* <h1> {score} 🏆 </h1>{" "} */}
       </div>
       <div className="play-ground">
@@ -206,6 +197,7 @@ function App(): ReactElement {
           <div className="lost-modal">
             <p> YOU LOST! YOU SUCK!</p>
             <h2>💩</h2>
+            <p> Your score is : {score} </p>
             <button onClick={playAgain}> PLAY AGAIN </button>
           </div>
         )}
@@ -230,6 +222,7 @@ function App(): ReactElement {
           {imageSources.map((image, index) => {
             return (
               <img
+                key={index}
                 src={image}
                 alt="bgimage"
                 style={{
@@ -251,22 +244,20 @@ function App(): ReactElement {
                   position: "absolute",
                   left: pos[0],
                   top: pos[1],
-                  borderRadius: index === snakeDots.length - 1 ? "10px" : 0,
                 }}
                 className="snake-square"
               />
             );
           })}
           {foodDots && (
-            <div
+            <img
+              className="food-dot"
               style={{
-                backgroundColor: "white",
-                position: "absolute",
-                width: 30,
-                height: 30,
                 left: foodDots[0],
                 top: foodDots[1],
               }}
+              src={beans}
+              alt="beans"
             />
           )}
         </div>
@@ -274,25 +265,35 @@ function App(): ReactElement {
       <div className="speed-container">
         {speedChoices.map((choice) => {
           const splittedChoice: any = choice.name.split(" ");
+          const styles = {
+            backgroundColor:
+              splittedChoice[0] === selectedSpeed ? "green" : "white",
+            color: splittedChoice[0] === selectedSpeed ? "white" : "black",
+            opacity: splittedChoice[0] === selectedSpeed ? 1 : 0.7,
+            boxShadow:
+              splittedChoice[0] === selectedSpeed ? "0 0 8px 4px  red" : "",
+          };
+
           return (
             <div
-              style={{
-                backgroundColor:
-                  splittedChoice[0] === selectedSpeed ? "green" : "white",
-                color: splittedChoice[0] === selectedSpeed ? "white" : "black",
-                opacity: splittedChoice[0] === selectedSpeed ? 1 : 0.7,
-                boxShadow:
-                  splittedChoice[0] === selectedSpeed ? "0 0 8px 4px  red" : "",
-              }}
+              style={styles}
               key={choice.speed}
               className="speed-choice"
               onClick={() => {
                 setSelectedSpeed(splittedChoice[0]);
                 setSpeed(choice.speed);
+                setSelfChosen(true);
               }}
             >
               <p> {splittedChoice[0]} </p>
-              <p style={{ fontSize: 30, marginLeft: 10, marginBottom: 5 }}>
+              <p
+                style={{
+                  fontSize: 30,
+                  marginLeft: 15,
+                  marginBottom: 3,
+                }}
+                className="emoji"
+              >
                 {splittedChoice[1]}
               </p>
             </div>
