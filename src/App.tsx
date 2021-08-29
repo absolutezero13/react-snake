@@ -36,6 +36,10 @@ function App(): ReactElement {
   }, []);
 
   useEffect(() => {
+    moveSnake();
+  }, [direction]);
+
+  useEffect(() => {
     if (!isGameOver) {
       clearTimeout(clearTimeoutSnake);
       const clear = setTimeout(() => {
@@ -154,14 +158,23 @@ function App(): ReactElement {
     snakeDots.forEach((dots) => {
       if (foodDots[0] === dots[0] && foodDots[1] === dots[1]) {
         setSnakeDots((prevDots) => {
-          // let newDots = [];
+          let newDots = [];
+          const lastDot = prevDots[0][0];
+          if (direction === "right") {
+            newDots = [lastDot, lastDot + 30];
+          }
+          if (direction === "left") {
+          }
+          newDots = [lastDot, lastDot - 30];
 
-          // if (direction === "right" || direction === "left") {
-          //   newDots = [prevDots[0][0], prevDots[0][0] - 30];
-          // } else {
-          //   newDots = [prevDots[0][0] - 30, prevDots[0][0]];
-          // }
-          return [[], ...prevDots];
+          if (direction === "down") {
+            newDots = [lastDot + 30, lastDot];
+          }
+
+          if (direction === "up") {
+            newDots = [lastDot - 30, lastDot];
+          }
+          return [newDots, ...prevDots];
         });
 
         setScore((prevScore) => prevScore + 1);
