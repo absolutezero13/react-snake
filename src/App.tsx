@@ -5,7 +5,7 @@ import { useState } from "react";
 import { ReactElement } from "react";
 import { initialSnakeDots, imageSources, speedChoices } from "./helpers/data";
 import "./App.css";
-import sarah from "./sarah.png";
+import gamz from "./gamz.png";
 import beans from "./assets/beans.jpg";
 
 type speedChoiceTypes =
@@ -253,8 +253,8 @@ function App(): ReactElement {
           {snakeDots.map((pos, index) => {
             return (
               <img
-                alt="sarah"
-                src={sarah}
+                alt="gamz"
+                src={gamz}
                 key={index}
                 style={{
                   position: "absolute",
